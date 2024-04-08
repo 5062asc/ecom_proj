@@ -26,6 +26,16 @@ export default function HomePage() {
                     Shop Now{" "}
                   </a>
                 </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <div className="rounded-md shadow">
+                  <a
+                    href="/orders"
+                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 md:py-4 md:text-lg md:px-10"
+                  >
+                    {" "}
+                    My orders{" "}
+                  </a>
+                </div>
               </div>
             </div>
           </div>

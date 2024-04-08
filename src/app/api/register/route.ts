@@ -1,8 +1,8 @@
 import connectDB from "../../db/db";
-import bcryptjs from "bcryptjs";
 import { SignJWT } from "jose";
 import { NextRequest } from "next/server";
 import { UserModel } from "../../lib/db/model/users";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
@@ -10,22 +10,21 @@ export async function POST(req: NextRequest) {
   const SECRET_KEY = process.env.JWT_SECRET_KEY;
   await connectDB;
   try {
-    const user = await UserModel.findOne({ email });
-    const { password: hashedPassword, _id } = user;
+    if (email && password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = new UserModel({ email, password: hashedPassword });
+      const user = await newUser.save();
 
-    if (
-      password &&
-      hashedPassword &&
-      bcryptjs.compareSync(password, hashedPassword)
-    ) {
-      const token = await new SignJWT({ id: _id })
+      console.log(user);
+
+      const token = await new SignJWT({ id: user._id })
         .setProtectedHeader({ alg: "HS256" })
         .setExpirationTime("1h")
         .sign(new TextEncoder().encode(SECRET_KEY));
 
       return Response.json(
         {
-          message: "user logged in",
+          message: "user registered",
           token: token,
         },
         {

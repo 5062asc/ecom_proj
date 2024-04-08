@@ -12,20 +12,28 @@ export default function LoginPage() {
 
   async function login(e: any) {
     e.preventDefault();
-    // try {
-    //   const response = await fetch("http://localhost:3000/api/login", {
-    //     method: "POST",
-    //     body: JSON.stringify({ email, password }),
-    //   });
-    //   const json = await response.json();
-    //   console.log(json);
-    //   router.push("/home");
-    // } catch (error) {}
-    if (email === "asc@gmail.com" && password === "pwd") {
-      router.push("/home");
-      setErrMessage("");
-    } else {
-      setErrMessage("Invalid Credentials");
+    try {
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+      const json = await response.json();
+      console.log("login message", json.message);
+      if (json?.message === "user logged in") {
+        console.log("correct", json.token);
+        e.preventDefault();
+
+        router.push("/home");
+      } else {
+        console.log("incorrect", json.message);
+        setErrMessage("Invalid Credentials");
+      }
+    } catch (error) {
+      if (email === "asc@gmail.com" && password === "pwd") {
+        router.push("/home");
+      } else {
+        setErrMessage("Invalid Credentials");
+      }
     }
   }
 
@@ -55,7 +63,6 @@ export default function LoginPage() {
                       className="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-gray-900"
                       placeholder="name@example.com"
                       onChange={(e) => {
-                        console.log(e.target.value);
                         setEmail(e.target.value);
                       }}
                     />
